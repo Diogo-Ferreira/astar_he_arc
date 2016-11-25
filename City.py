@@ -1,3 +1,11 @@
+"""
+Ferreira Venancio Diogo
+IA Class HE-ARC 2016
+
+Class city
+"""
+
+
 class City(object):
     def __init__(self, name, x_pos, y_pos):
         self.name = name
@@ -14,6 +22,7 @@ class City(object):
         return self.name
 
     def __getitem__(self, item):
+        """Allows to get the connection like: sourceCity['targetCity'] """
         if item in self.connections:
             return self.connections[item]
         else:

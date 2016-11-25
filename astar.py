@@ -1,13 +1,29 @@
-from math import sqrt
+"""
+Ferreira Venancio Diogo
+IA Class HE-ARC 2016
 
+Main module
+
+Note : I choose to not write a state class like the last exercise,
+ because I don't feel the need for it to this simple problem,
+ but it's true that it would be more generic with a state class.
+"""
 import sys
-
 from files_parsing import load_connections, load_cities, trace_to
 from heuristics import *
 
 
 def search(fromCityName, toCityName, cities, heuristicFunction):
+    """
+    Search the min path between 2 cities, using the heuristicFunction as h(x) for the cost
+    :param fromCityName: name of the start city
+    :param toCityName: name of the target city
+    :param cities: dict of cities objects
+    :param heuristicFunction: h(x)
+    :return: target city object, who's parent contains the path (go through every parent)
+    """
     frontier = [cities[fromCityName]]
+    # stores the last cost of the city in frontier, much efficient than to look in the front
     costs_to = {}
     history = set()
     history.add(frontier[0])
@@ -18,6 +34,7 @@ def search(fromCityName, toCityName, cities, heuristicFunction):
     while frontier:
 
         log += "front=[%s] \n" % ", ".join(["'%s'" % str(f) for f in frontier])
+
         log += "his=[%s] \n" % ", ".join(["'%s'" % str(h) for h in history])
 
         current_city = frontier.pop()
@@ -31,6 +48,7 @@ def search(fromCityName, toCityName, cities, heuristicFunction):
 
         for neighbour_name, dist in current_city:
 
+            # If the neighbour is already in front, but the path from the current is cheaper
             if neighbour_name in costs_to and gx + dist < costs_to[neighbour_name]:
                 frontier.remove(neighbour_name)
 
@@ -47,6 +65,13 @@ def search(fromCityName, toCityName, cities, heuristicFunction):
 
 
 def astart(h, cities, fromCity='Warsaw', toCity='Lisbon'):
+    """
+    Initiates the aster algorithm, and goes through every city of the path
+    :param h: h(X)
+    :param cities: dict of cities objects
+    :param fromCity: start city name
+    :param toCity: target city name
+    """
     print("with %s" % h.__name__)
 
     city, hist, log = search(fromCity, toCity, cities, h)
@@ -55,6 +80,7 @@ def astart(h, cities, fromCity='Warsaw', toCity='Lisbon'):
 
     path = []
 
+    # Creates the path, by going throug each parent
     while parent:
         path.append(parent.name)
         parent = parent.parent
@@ -63,6 +89,7 @@ def astart(h, cities, fromCity='Warsaw', toCity='Lisbon'):
 
     log += "Path : %s \n" % str(path[::-1]) + resultOut
 
+    # Writes to astar.log
     trace_to(log)
 
     print(path[::-1])
@@ -71,6 +98,10 @@ def astart(h, cities, fromCity='Warsaw', toCity='Lisbon'):
 
 
 if __name__ == "__main__":
+    """
+    How to: python3 astar.py Warsaw Lisbon
+    this will run every h(s), and dump everything in astar.log
+    """
     city_file = "positions.txt"
 
     connections_file = "connections.txt"
